@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="post" id="login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100 mt-3" id="login-button">
+                <span id="button-text">Login</span>
+                <span id="loading-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Loading Animation Script -->
+<script>
+    const loginButton = document.getElementById('login-button');
+    const buttonText = document.getElementById('button-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+
+    document.getElementById('login-form').addEventListener('submit', function () {
+        loginButton.disabled = true;
+        buttonText.classList.add('d-none');
+        loadingSpinner.classList.remove('d-none');
+    });
+</script>
+{% endblock %}
