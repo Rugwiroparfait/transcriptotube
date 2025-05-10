@@ -1,3 +1,5 @@
+import dj_database_url
+import os
 from pathlib import Path
 
 # Base directory
@@ -6,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security settings
 SECRET_KEY = "django-insecure-t5rva**z&$ot9tp%9e67z%x$s-hr9+@la(g#rc18l_1aokqcm0"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Installed apps
 INSTALLED_APPS = [
@@ -82,9 +84,15 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Crispy forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# Whitenoise middleware for static files
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# Use dj_database_url to configure Postgres
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
