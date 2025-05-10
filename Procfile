@@ -1,2 +1,1 @@
-web: gunicorn transcriptotube.wsgi
-
+web: gunicorn config.wsgi

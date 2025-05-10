@@ -81,17 +81,12 @@ function animateTranscriptEntries() {
 }
 
 /**
- * Copy transcript text to clipboard
+ * Copy transcript text to clipboard with selected format
  */
 function copyTranscript() {
-    const entries = document.querySelectorAll('.transcript-entry');
-    let text = '';
+    const text = getTranscriptText();
     
-    entries.forEach(entry => {
-        const content = entry.querySelector('p')?.textContent || entry.textContent;
-        text += content.trim() + '\n\n';
-    });
-    
+    // Copy to clipboard
     if (navigator.clipboard && text) {
         navigator.clipboard.writeText(text)
             .then(() => {
@@ -218,51 +213,26 @@ function initTranscriptControls() {
 }
 
 /**
- * Download transcript as text file
+ * Download transcript with selected format
  */
 function downloadTranscript() {
+    const formatSelect = document.getElementById('transcript-format');
+    const format = formatSelect ? formatSelect.value : 'paragraphs';
+    let filename = 'transcript.txt';
+    
+    if (format === 'markdown') {
+        filename = 'transcript.md';
+    }
+    
     const text = getTranscriptText();
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'transcript.txt';
+    a.download = filename;
     a.click();
     
     URL.revokeObjectURL(url);
     showToast('Transcript downloaded successfully!');
-}
-
-/**
- * Save edited transcript
- */
-function saveEditedTranscript() {
-    // In a real application, you would send this to a server
-    const editedTranscript = Array.from(document.querySelectorAll('.transcript-entry')).map(entry => {
-        return {
-            start: parseFloat(entry.dataset.start),
-            duration: parseFloat(entry.dataset.duration),
-            text: entry.querySelector('.editable-text').innerText.trim()
-        };
-    });
-    
-    console.log('Edited transcript:', editedTranscript);
-    showToast('Transcript saved!');
-}
-
-/**
- * Get formatted transcript text
- */
-function getTranscriptText() {
-    const entries = document.querySelectorAll('.transcript-entry');
-    let text = '';
-    
-    entries.forEach(entry => {
-        const timestamp = entry.querySelector('.timestamp-btn')?.innerText || '';
-        const content = entry.querySelector('.editable-text')?.innerText || '';
-        text += `[${timestamp}] ${content}\n\n`;
-    });
-    
-    return text;
 }
